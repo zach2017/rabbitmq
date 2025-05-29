@@ -1,1 +1,6 @@
 .DS_Store
+.gradle
+bin
+client/vitejsdemo/.yarn/
+*.cjs
+.gradle/
