@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MUI React App</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React and ReactDOM -->
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <!-- MUI Core and Lab -->
+  <script src="https://cdn.jsdelivr.net/npm/@mui/material@5.15.15/umd/material-ui.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mui/lab@5.0.0-alpha.170/umd/lab.development.js"></script>
+  <!-- Babel for JSX -->
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.23.2/babel.min.js"></script>
+  <style>
+    body { margin: 0; font-family: 'Roboto', sans-serif; }
+    #root { min-height: 100vh; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+    const {
+      AppBar, Toolbar, IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText,
+      Button, Dialog, DialogTitle, DialogContent, DialogActions, Snackbar, Alert,
+      Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
+      Collapse, Typography, Box, Container, CssBaseline, useMediaQuery, useTheme
+    } = window['@mui/material'];
+
+    // Sample data for the table
+    const tableData = [
+      { id: 1, name: 'John Doe', email: 'john@example.com', role: 'Developer' },
+      { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'Designer' },
+      { id: 3, name: 'Bob Johnson', email: 'bob@example.com', role: 'Manager' },
+    ];
+
+    function App() {
+      const [drawerOpen, setDrawerOpen] = useState(false);
+      const [dialogOpen, setDialogOpen] = useState(false);
+      const [snackbarOpen, setSnackbarOpen] = useState(false);
+      const [snackbarMessage, setSnackbarMessage] = useState('');
+      const [expandedRows, setExpandedRows] = useState({});
+      const theme = useTheme();
+      const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+      // Toggle drawer
+      const toggleDrawer = (open) => (event) => {
+        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+          return;
+        }
+        setDrawerOpen(open);
+      };
+
+      // Handle dialog open/close
+      const handleDialogOpen = () => setDialogOpen(true);
+      const handleDialogClose = () => setDialogOpen(false);
+
+      // Handle snackbar
+      const showNotification = (message) => {
+        setSnackbarMessage(message);
+        setSnackbarOpen(true);
+      };
+      const handleSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        setSnackbarOpen(false);
+      };
+
+      // Handle collapse toggle
+      const toggleCollapse = (id) => {
+        setExpandedRows((prev) => ({ ...prev, [id]: !prev[id] }));
+      };
+
+      // Drawer content
+      const drawerContent = (
+        <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
+          <List>
+            {['Home', 'Profile', 'Settings'].map((text, index) => (
+              <ListItem button key={text} onClick={() => showNotification(`${text} clicked`)}>
+                <ListItemIcon>
+                  {index === 0 ? <span className="material-icons">home</span> :
+                   index === 1 ? <span className="material-icons">person</span> :
+                   <span className="material-icons">settings</span>}
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      );
+
+      return (
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+          <CssBaseline />
+          {/* AppBar */}
+          <AppBar position="static" color="primary">
+            <Toolbar>
+              <IconButton edge="start" color="inherit" onClick={toggleDrawer(true)} sx={{ mr: 2 }}>
+                <span className="material-icons">menu</span>
+              </IconButton>
+              <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                MUI React App
+              </Typography>
+              <Button color="inherit" onClick={handleDialogOpen}>
+                Open Dialog
+              </Button>
+            </Toolbar>
+          </AppBar>
+
+          {/* Drawer */}
+          <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
+            {drawerContent}
+          </Drawer>
+
+          {/* Main Content */}
+          <Container sx={{ py: 4, flexGrow: 1 }}>
+            <Typography variant="h4" gutterBottom className="text-center">
+              Responsive Dashboard
+            </Typography>
+
+            {/* Dialog */}
+            <Dialog open={dialogOpen} onClose={handleDialogClose} fullWidth maxWidth="sm">
+              <DialogTitle>Sample Dialog</DialogTitle>
+              <DialogContent>
+                <Typography>This is a responsive dialog popup.</Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{ mt: 2 }}
+                  onClick={() => {
+                    showNotification('Action confirmed!');
+                    handleDialogClose();
+                  }}
+                  fullWidth={isMobile}
+                >
+                  Confirm
+                </Button>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleDialogClose}>Close</Button>
+              </DialogActions>
+            </Dialog>
+
+            {/* Table */}
+            <TableContainer component={Paper} sx={{ mt: 4 }}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Role</TableCell>
+                    <TableCell>Details</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {tableData.map((row) => (
+                    <React.Fragment key={row.id}>
+                      <TableRow>
+                        <TableCell>{row.name}</TableCell>
+                        <TableCell>{row.email}</TableCell>
+                        <TableCell>{row.role}</TableCell>
+                        <TableCell>
+                          <Button onClick={() => toggleCollapse(row.id)}>
+                            {expandedRows[row.id] ? 'Hide' : 'Show'}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell colSpan={4} sx={{ py: 0 }}>
+                          <Collapse in={expandedRows[row.id]} timeout="auto" unmountOnExit>
+                            <Box sx={{ p: 2, bgcolor: 'grey.100' }}>
+                              <Typography>Details for {row.name}</Typography>
+                              <Typography variant="body2">
+                                This is a collapsible section with additional information about {row.name}.
+                              </Typography>
+                            </Box>
+                          </Collapse>
+                        </TableCell>
+                      </TableRow>
+                    </React.Fragment>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Container>
+
+          {/* Snackbar */}
+          <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
+            <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+              {snackbarMessage}
+            </Alert>
+          </Snackbar>
+        </Box>
+      );
+    }
+
+    // Render the app
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>

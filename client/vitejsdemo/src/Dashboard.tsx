@@ -20,6 +20,7 @@ import {
   Divider
 } from '@mui/material';
 import { getDashboardData } from './data';
+import Demo from './demo/Demo';
 
 const Dashboard: React.FC = () => {
   const data = getDashboardData();
@@ -126,6 +127,7 @@ const Dashboard: React.FC = () => {
           </Paper>
         </Grid>
       </Grid>
+      <Demo/>
     </Box>
   );
 };
