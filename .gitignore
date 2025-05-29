@@ -4,3 +4,5 @@ bin
 client/vitejsdemo/.yarn/
 *.cjs
 .gradle/
+.gradle/8.14/fileHashes/fileHashes.bin
+.gradle/8.14/fileHashes/fileHashes.lock
